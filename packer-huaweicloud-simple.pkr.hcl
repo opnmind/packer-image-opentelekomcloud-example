@@ -41,11 +41,7 @@ variable "availability_zone" {
   default = "eu-de-01"
 }
 
-variable "vpc_id" {
-  type = string
-}
-
-variable "subnet_id" {
+variable "networks" {
   type = string
 }
 
@@ -53,13 +49,13 @@ source "huaweicloud-ecs" "basic-example" {
   auth_url           = var.auth_url
   access_key         = var.access_key
   secret_key         = var.secret_key
+  project_name       = var.project_name
   region             = var.region
   flavor             = var.flavor
   image_name         = var.otc_image_name
   source_image_name  = var.source_image_name
   availability_zone  = var.availability_zone
-  vpc_id             = var.vpc_id
-  subnets            = [var.subnet_id]
+  networks           = [var.networks]
   security_groups    = ["default"]
   ssh_ip_version     = "4"
   ssh_username       = "linux"
