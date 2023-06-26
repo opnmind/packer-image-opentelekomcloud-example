@@ -1,9 +1,16 @@
 variable "access_key" {
   type = string
+  sensitive = true
 }
 
 variable "secret_key" {
   type = string
+  sensitive = true
+}
+
+variable "ssh_username" {
+  type = string
+  default = "linux"
 }
 
 variable "project_name" {
@@ -41,7 +48,11 @@ variable "availability_zone" {
   default = "eu-de-01"
 }
 
-variable "networks" {
+variable "vpcid" {
+  type = string
+}
+
+variable "subnets" {
   type = string
 }
 
@@ -55,10 +66,11 @@ source "huaweicloud-ecs" "basic-example" {
   image_name         = var.otc_image_name
   source_image_name  = var.source_image_name
   availability_zone  = var.availability_zone
-  networks           = [var.networks]
+  vpc_id              = var.vpcid
+  subnets            = [var.subnets]
   security_groups    = ["default"]
   ssh_ip_version     = "4"
-  ssh_username       = "linux"
+  ssh_username       = var.ssh_username
   insecure           = true
 }
 
@@ -67,11 +79,11 @@ build {
 
   provisioner "shell" {
     inline = [
-      "echo \"start install nginx, sleep 10s first\"",
+      "echo \"start install, sleep 10s first\"",
       "sleep 10",
       "echo \"run install\"",
-      "sudo zypper ref -s",
-      "sudo zypper up -y",
+      "sudo apt update -y",
+      "sudo apt upgrade -y",
       "echo \"upgrade done\""
     ]
   }
