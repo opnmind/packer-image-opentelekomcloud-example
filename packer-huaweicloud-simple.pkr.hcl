@@ -13,6 +13,16 @@ variable "ssh_username" {
   default = "linux"
 }
 
+variable "ssh_keypair_name" {
+  type = string
+  default = ""
+}
+
+variable "ssh_agent_auth" {
+  type = bool
+  default = false
+}
+
 variable "project_name" {
   type = string
   default = "eu-de"
@@ -56,6 +66,11 @@ variable "subnets" {
   type = string
 }
 
+variable "security_groups" {
+  type = list(string)
+  default = ["default"]
+}
+
 source "huaweicloud-ecs" "basic-example" {
   auth_url           = var.auth_url
   access_key         = var.access_key
@@ -68,10 +83,14 @@ source "huaweicloud-ecs" "basic-example" {
   availability_zone  = var.availability_zone
   vpc_id              = var.vpcid
   subnets            = [var.subnets]
-  security_groups    = ["default"]
+  security_groups    = var.security_groups
   ssh_ip_version     = "4"
   ssh_username       = var.ssh_username
+  #ssh_keypair_name   = var.ssh_keypair_name
+  #ssh_agent_auth     = var.ssh_agent_auth
   insecure           = true
+  eip_type           = "5_bgp"
+  eip_bandwidth_size = 5
 }
 
 build {
@@ -89,12 +108,12 @@ build {
   }
 }
 
-packer {
-  required_plugins {
-    huaweicloud = {
-      version = ">= 0.4.0"
-      source  = "github.com/huaweicloud/huaweicloud"
-    }
-  }
-}
+#packer {
+#  required_plugins {
+#    huaweicloud = {
+#      version = ">=1.0.3"
+#      source  = "github.com/huaweicloud/huaweicloud"
+#    }
+#  }
+#}
 
